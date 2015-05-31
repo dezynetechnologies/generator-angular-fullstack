@@ -401,3 +401,61 @@ See the `travis.yml` for configuration required to run tests.
 ## License
 
 [BSD license](http://opensource.org/licenses/bsd-license.php)
+
+## Things to have here
+
+Must-haves:
+
+node.js+express
+jwt-token based authentication
+oauth 2.0 support for twitter/facebook/linkedin/google+
+API aaccess using token based validation(Needed for mobile apps); enterprise grade security
+real-time communication requirements
+solution to CORS/CSRF
+promises based architecture - $q service from angular for promises
+Google Analytics
+bootstrap-sass
+socket.io
+minimise the snapshot(jsmin/cssmin/htmlmin)
+
+Material Design
+*bootstrap-material(made optional)
+
+Advanced Data Tables
+*ngTable or https://github.com/lorenzofox3/Smart-Table
+
+Form Creation
+*angular-formly
+
+
+Need to implement yet:
+
+Access Policies
+*access-control based on user-roles(concept taken from mean stack)
+
+
+Advanced User Management:
+*User authentication/password-reset/forgotten password
+*User creation/deletion/updation
+
+
+
+As per the requirements:
+
+offline access
+event-system of angular
+oauth 2.0 support for linkedin
+
+Good-to-haves:
+REST API endpoint creation - mers and
+SSL/TLS acess: https
+webpack
+gulp
+lumx/angular-material
+d3.js+other graph display utilities
+caching-memcache/redis
+websockets
+Material Design: angular-material/lumx/materialise/ploymer
+
+
+

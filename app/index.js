@@ -100,6 +100,10 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         filter: function( val ) { return val.toLowerCase(); }
       }, {
         type: "confirm",
+        name: "cors",
+        message: "Would you like to have CORs enabled?"
+      }, {
+        type: "confirm",
         name: "bootstrap",
         message: "Would you like to include Bootstrap?"
       }, {
@@ -109,13 +113,19 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         when: function (answers) {
           return answers.bootstrap;
         }
+      },{
+        type: "confirm",
+        name: "bootstrapmaterial",
+        message: "Would you like to include Bootstrap Material Design?"	
       }], function (answers) {
         this.filters[answers.script] = true;
         this.filters[answers.markup] = true;
         this.filters[answers.stylesheet] = true;
         this.filters[answers.router] = true;
+        this.filters.cors = !!answers.cors;
         this.filters.bootstrap = !!answers.bootstrap;
         this.filters.uibootstrap =  !!answers.uibootstrap;
+	this.filters.bootstrapmaterial = !!answers.bootstrapmaterial;
       cb();
       }.bind(this));
   },
@@ -235,8 +245,10 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
 
   ngModules: function() {
     this.filters = this._.defaults(this.config.get('filters'), {
+      cors: true,
       bootstrap: true,
-      uibootstrap: true
+      uibootstrap: true,
+      bootstrapmaterial: true
     });
 
     var angModules = [

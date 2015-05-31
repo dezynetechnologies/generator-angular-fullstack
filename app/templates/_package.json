@@ -3,31 +3,48 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
-    "express": "~4.9.0",
-    "morgan": "~1.0.0",
+    "express": "~4.12.3",
+    "morgan": "~1.5.2",
     "body-parser": "~1.5.0",
     "method-override": "~1.0.0",
     "serve-favicon": "~2.0.1",
-    "cookie-parser": "~1.0.1",
-    "express-session": "~1.0.2",
+    "cookie-parser": "~1.3.2",
+    "express-session": "~1.10.4",
+    "cors": "^2.6.0",
+    "debug": "^2.2.0",
+    "express-unless": "^0.1.0",
+    "forever": "~0.11.0",
+    "glob": "~5.0.0",
+    "grunt-cli": "~0.1.13",
+    "helmet": "~0.7.1",
+    "hiredis": "^0.3.0",
     "errorhandler": "~1.0.0",
-    "compression": "~1.0.1",
+    "compression": "~1.4.3",
     "lodash": "~2.4.1",<% if(filters.jade) { %>
     "jade": "~1.2.0",<% } %><% if(filters.html) { %>
     "ejs": "~0.8.4",<% } %><% if(filters.mongoose) { %>
     "mongoose": "~3.8.8",<% } %><% if(filters.auth) { %>
-    "jsonwebtoken": "^0.3.0",
-    "express-jwt": "^0.1.3",
+    "mers": "^0.13.1",
+    "method-override": "~2.3.0",
+    "mongoose-middleware": "~0.2.10",
+    "multer": "0.1.6",
+    "nodemailer": "~1.3.0",
+    "on-finished": "^2.2.1",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^5.0.0",
+    "express-jwt": "^3.0.0",
     "passport": "~0.2.0",
-    "passport-local": "~0.1.6",<% } %><% if(filters.facebookAuth) { %>
-    "passport-facebook": "latest",<% } %><% if(filters.twitterAuth) { %>
-    "passport-twitter": "latest",<% } %><% if(filters.googleAuth) { %>
+    "passport-local": "~1.0.0",<% } %><% if(filters.facebookAuth) { %>
+    "passport-facebook": "~1.0.2",<% } %><% if(filters.twitterAuth) { %>
+    "passport-twitter": "~1.0.2",<% } %><% if(filters.googleAuth) { %>
     "passport-google-oauth": "latest",<% } %>
+    "passport-linkedin": "~0.1.3",
+    "redis": "^0.12.1",
     "composable-middleware": "^0.3.0",
-    "connect-mongo": "^0.4.1"<% if(filters.socketio) { %>,
-    "socket.io": "^1.0.6",
+    "connect-mongo": "~0.8.0"<% if(filters.socketio) { %>,
+    "socket.io": "~1.1.0",
     "socket.io-client": "^1.0.6",
-    "socketio-jwt": "^2.0.2"<% } %>
+    "socketio-jwt": "^4.0.0"<% } %>
   },
   "devDependencies": {
     "grunt": "~0.4.4",
