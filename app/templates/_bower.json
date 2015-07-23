@@ -29,7 +29,7 @@
             if (filters.socketio) { %> ,
                 "angular-socket-io": "~0.6.0" <%
             } %> <% if (filters.uirouter) { %> ,
-            "angular-ui-router": "~0.2.10" <%
+            "angular-ui-router": "~0.2.15" <%
         } %> <%
         if (filters.bootstrapmaterial) { %> ,
             "bootstrap-material-design": "~0.3.0" <%

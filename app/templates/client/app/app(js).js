@@ -54,6 +54,7 @@ if (filters.auth) { %>
         };
     })
 
+<<<<<<< HEAD
     .run(function ($rootScope, $location, Auth, $state, $stateParams, $window, $templateCache) {
         $rootScope.$state = $state;
         $rootScope.$stateParams = $stateParams;
