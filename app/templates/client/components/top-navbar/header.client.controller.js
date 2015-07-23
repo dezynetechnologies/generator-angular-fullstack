@@ -4,7 +4,7 @@ angular.module('<%= scriptAppName %>').controller('HeaderController', ['$scope',
     function ($scope, Auth, Menus) {
         //$scope.authentication = Authentication;
 
-        $scope.isCollapsed = false;
+        $scope.isCollapsed = false; <%
         if (filters.auth) { %>
             $scope.isLoggedIn = Auth.isLoggedIn;
             $scope.isAdmin = Auth.isAdmin;

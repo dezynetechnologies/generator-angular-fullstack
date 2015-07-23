@@ -25,6 +25,9 @@ Run `yo angular-fullstack`, optionally passing an app name:
 yo angular-fullstack [app-name]
 ```
 
+then update angular-bootstrap to 0.12 or later
+and update angular-cookies to 14.0(order is important)
+
 Run `grunt` for building, `grunt serve` for preview, and `grunt serve:dist` for a preview of the built app.
 
 ## Prerequisites
