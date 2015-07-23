@@ -82,15 +82,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
                 return filterMap[val];
             }
       }, {
-<<<<<<< HEAD
-            type: "list",
-            name: "markup",
-            message: "What would you like to write markup with?",
-            choices: ["HTML", "Jade"],
-            filter: function (val) {
-                return val.toLowerCase();
-            }
-=======
         type: "confirm",
         name: "babel",
         message: "Would you like to use Javascript ES6 in your client by preprocessing it with Babel?",
@@ -103,7 +94,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         message: "What would you like to write markup with?",
         choices: [ "HTML", "Jade"],
         filter: function( val ) { return val.toLowerCase(); }
->>>>>>> upstream/master
       }, {
             type: "list",
             name: "stylesheet",
@@ -142,20 +132,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
             name: "bootstrapmaterial",
             message: "Would you like to include Bootstrap Material Design?"
       }], function (answers) {
-<<<<<<< HEAD
-            this.filters[answers.script] = true;
-            this.filters[answers.markup] = true;
-            this.filters[answers.stylesheet] = true;
-            this.filters[answers.router] = true;
-            this.filters.cors = !!answers.cors;
-            this.filters.bootstrap = !!answers.bootstrap;
-            this.filters.uibootstrap = !!answers.uibootstrap;
-            this.filters.bootstrapmaterial = !!answers.bootstrapmaterial;
-            cb();
-        }.bind(this));
-    },
-=======
-        
         this.filters.babel = !!answers.babel;
         if(this.filters.babel){ this.filters.js = true; }
         this.filters[answers.script] = true;
@@ -163,11 +139,12 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         this.filters[answers.stylesheet] = true;
         this.filters[answers.router] = true;
         this.filters.bootstrap = !!answers.bootstrap;
+        this.filters.cors = !!answers.cors;
         this.filters.uibootstrap =  !!answers.uibootstrap;
+        this.filters.bootstrapmaterial = !!answers.bootstrapmaterial;
       cb();
       }.bind(this));
   },
->>>>>>> upstream/master
 
     serverPrompts: function () {
         if (this.skipConfig) return;
@@ -258,18 +235,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
         var extensions = [];
         var filters = [];
 
-<<<<<<< HEAD
-        if (this.filters.ngroute) filters.push('ngroute');
-        if (this.filters.uirouter) filters.push('uirouter');
-        if (this.filters.coffee) extensions.push('coffee');
-        if (this.filters.js) extensions.push('js');
-        if (this.filters.html) extensions.push('html');
-        if (this.filters.jade) extensions.push('jade');
-        if (this.filters.css) extensions.push('css');
-        if (this.filters.stylus) extensions.push('styl');
-        if (this.filters.sass) extensions.push('scss');
-        if (this.filters.less) extensions.push('less');
-=======
     if(this.filters.ngroute) filters.push('ngroute');
     if(this.filters.uirouter) filters.push('uirouter');
     if(this.filters.babel) extensions.push('babel');
@@ -281,7 +246,6 @@ var AngularFullstackGenerator = yeoman.generators.Base.extend({
     if(this.filters.stylus) extensions.push('styl');
     if(this.filters.sass) extensions.push('scss');
     if(this.filters.less) extensions.push('less');
->>>>>>> upstream/master
 
         this.composeWith('ng-component', {
             options: {
