@@ -1,7 +1,14 @@
 # AngularJS Full-Stack generator
-[![Build Status](https://travis-ci.org/DaftMonk/generator-angular-fullstack.svg?branch=master)](http://travis-ci.org/DaftMonk/generator-angular-fullstack) [![npm version](https://badge.fury.io/js/generator-angular-fullstack.svg)](http://badge.fury.io/js/generator-angular-fullstack) ![](https://david-dm.org/daftmonk/generator-angular-fullstack.png) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/DaftMonk/generator-angular-fullstack)
-
+[![Build Status](https://travis-ci.org/DaftMonk/generator-angular-fullstack.svg?branch=master)](http://travis-ci.org/DaftMonk/generator-angular-fullstack)
+[![npm version](https://badge.fury.io/js/generator-angular-fullstack.svg)](http://badge.fury.io/js/generator-angular-fullstack)
+[![Dependency Status](https://david-dm.org/daftmonk/generator-angular-fullstack.svg)](https://david-dm.org/daftmonk/generator-angular-fullstack)
+[![Dev-Dependency Status](https://david-dm.org/daftmonk/generator-angular-fullstack/dev-status.svg)](https://david-dm.org/daftmonk/generator-angular-fullstack#info=devDependencies)
+[![Gitter chat](https://badges.gitter.im/DaftMonk/generator-angular-fullstack.svg)](https://gitter.im/DaftMonk/generator-angular-fullstack)
 > Yeoman generator for creating MEAN stack applications, using MongoDB, Express, AngularJS, and Node - lets you quickly set up a project following best practices.
+
+#### Generated project: 
+[![Dependency Status](https://david-dm.org/angular-fullstack/angular-fullstack-deps.svg)](https://david-dm.org/angular-fullstack/angular-fullstack-deps)
+[![Dev-Dependency Status](https://david-dm.org/angular-fullstack/angular-fullstack-deps/dev-status.svg)](https://david-dm.org/angular-fullstack/angular-fullstack-deps#info=devDependencies)
 
 ## Example project
 
@@ -11,9 +18,9 @@ Source code: https://github.com/DaftMonk/fullstack-demo
 
 ## Usage
 
-Install `generator-angular-fullstack`:
+Install `yo`, `grunt-cli`, `bower`, and `generator-angular-fullstack`:
 ```
-npm install -g generator-angular-fullstack
+npm install -g yo grunt-cli bower generator-angular-fullstack
 ```
 
 Make a new directory, and `cd` into it:
@@ -39,7 +46,7 @@ Run `grunt` for building, `grunt serve` for preview, and `grunt serve:dist` for 
 
 **Client**
 
-* Scripts: `JavaScript`, `CoffeeScript`, `Babel`
+* Scripts: `JavaScript`, `Babel`
 * Markup:  `HTML`, `Jade`
 * Stylesheets: `CSS`, `Stylus`, `Sass`, `Less`,
 * Angular Routers: `ngRoute`, `ui-router`
@@ -55,12 +62,11 @@ Run `grunt` for building, `grunt serve` for preview, and `grunt serve:dist` for 
 
 A grunt task looks for new files in your `client/app` and `client/components` folder and automatically injects them in the appropriate places based on an injection block.
 
-* `less` files into `client/app.less`
-* `scss` files into `client/app.scss`
-* `stylus` files into `client/app.styl`
+* `less` files into `client/app/app.less`
+* `scss` files into `client/app/app.scss`
+* `stylus` files into `client/app/app.styl`
 * `css` files into `client/index.html`
 * `js` files into `client/index.html`
-* `coffeescript` temp `js` files into `client/index.html`
 * `babel` temp `js` files into `client/index.html`
 
 ## Generators
@@ -87,6 +93,21 @@ Available generators:
 ### App
 Sets up a new AngularJS + Express app, generating all the boilerplate you need to get started.
 
+Usage:
+```bash
+Usage:
+  yo angular-fullstack:app [options] [<name>]
+
+Options:
+  -h,   --help          # Print the generator's options and usage
+        --skip-cache    # Do not remember prompt answers                        Default: false
+        --skip-install  # Do not install dependencies                           Default: false
+        --app-suffix    # Allow a custom suffix to be added to the module name  Default: App
+
+Arguments:
+  name    Type: String  Required: false
+```
+
 Example:
 ```bash
 yo angular-fullstack
@@ -95,6 +116,21 @@ yo angular-fullstack
 ### Endpoint
 Generates a new API endpoint.
 
+Usage:
+```bash
+Usage:
+  yo angular-fullstack:endpoint [options] <name>
+
+Options:
+  -h,   --help               # Print the generator's options and usage
+        --skip-cache         # Do not remember prompt answers           Default: false
+        --route              # URL for the endpoint
+        --models             # Specify which model(s) to use
+        --endpointDirectory  # Parent directory for enpoints
+
+Arguments:
+  name    Type: String  Required: true
+```
 
 Example:
 ```bash
@@ -105,9 +141,11 @@ yo angular-fullstack:endpoint message
 Produces:
 
     server/api/message/index.js
-    server/api/message/message.spec.js
+    server/api/message/index.spec.js
     server/api/message/message.controller.js
+    server/api/message/message.integration.js
     server/api/message/message.model.js  (optional)
+    server/api/message/message.events.js (optional)
     server/api/message/message.socket.js (optional)
 
 ### Route
@@ -266,7 +304,7 @@ To work with your new heroku app using the command line, you will need to run an
 
 If you're using mongoDB you will need to add a database to your app:
 
-    heroku addons:add mongolab
+    heroku addons:create mongolab
 
 Your app should now be live. To view it run `heroku open`.
 
@@ -305,7 +343,6 @@ The following packages are always installed by the [app](#app) generator:
 * angular-mocks
 * angular-resource
 * angular-sanitize
-* angular-scenario
 * es5-shim
 * font-awesome
 * json3
@@ -342,6 +379,19 @@ To setup protractor e2e tests, you must first run
 `npm run update-webdriver`
 
 Use `grunt test:e2e` to have protractor go through tests located in the `e2e` folder.
+
+**Code Coverage**
+
+Use `grunt test:coverage` to run mocha-istanbul and generate code coverage reports.
+
+`coverage/server` will be populated with `e2e` and `unit` folders containing the `lcov` reports.
+
+The coverage taget has 3 available options:
+- `test:coverage:unit` generate server unit test coverage
+- `test:coverage:e2e` generate server e2e test coverage
+- `test:coverage:check` combine the coverage reports and check against predefined thresholds
+
+* *when no option is given `test:coverage` runs all options in the above order*
 
 ## Environment Variables
 

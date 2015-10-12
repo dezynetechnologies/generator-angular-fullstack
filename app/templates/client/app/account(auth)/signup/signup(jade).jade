@@ -1,4 +1,4 @@
-div(ng-include='"components/navbar/navbar.html"')
+navbar
 .container
   .row
     .col-sm-12
@@ -26,32 +26,38 @@ div(ng-include='"components/navbar/navbar.html"')
         .form-group(ng-class='{ "has-success": form.password.$valid && submitted,\
         "has-error": form.password.$invalid && submitted }')
           label Password
-          input.form-control(type='password', name='password', ng-model='user.password', ng-minlength='3', required='', mongoose-error='')
+          input.form-control(type='password'
+            name='password'
+            ng-model='user.password'
+            mongoose-error=''
+            ng-minlength='3', required='')
           p.help-block(ng-show='(form.password.$error.minlength || form.password.$error.required) && submitted')
             | Password must be at least 3 characters.
           p.help-block(ng-show='form.password.$error.mongoose')
             | {{ errors.password }}
 
+        .form-group(ng-class='{ "has-success": form.confirmPassword.$valid && submitted,\
+        "has-error": form.confirmPassword.$invalid && submitted }')
+          label Confirm Password
+          input.form-control(type='password'
+            name='confirmPassword'
+            ng-model='user.confirmPassword'
+            match="user.password"
+            ng-minlength='3', required='')
+          p.help-block(ng-show='form.confirmPassword.$error.match && submitted')
+            | Passwords must match.
+
         div
-          button.btn.btn-inverse.btn-lg.btn-login(type='submit')
+          button.btn.btn-inverse.btn-lg.btn-register(type='submit')
             | Sign up
           = ' '
-          a.btn.btn-default.btn-lg.btn-register(href='/login')
+          a.btn.btn-default.btn-lg.btn-login(<% if (filters.uirouter) { %>ui-sref='login'<% } else { %>href='/login'<% } %>)
             | Login
-
-<% if(filters.oauth) {%>
+<% if (filters.oauth) {%>
         hr
 
-        div<% if(filters.facebookAuth) {%>
-          a.btn.btn-facebook(href='', ng-click='loginOauth("facebook")')
-            i.fa.fa-facebook
-            |  Connect with Facebook
-          = ' '<% } %><% if(filters.googleAuth) {%>
-          a.btn.btn-google-plus(href='', ng-click='loginOauth("google")')
-            i.fa.fa-google-plus
-            |  Connect with Google+
-          = ' '<% } %><% if(filters.twitterAuth) {%>
-          a.btn.btn-twitter(href='', ng-click='loginOauth("twitter")')
-            i.fa.fa-twitter
-            |  Connect with Twitter<% } %><% } %>
+        .row
+          .col-sm-4.col-md-3
+            oauth-buttons(classes='btn-block')
+<% } %>
   hr

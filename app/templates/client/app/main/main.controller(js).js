@@ -1,42 +1,36 @@
 'use strict';
+(function() {
+
+function MainController($scope, $http<% if (filters.socketio) { %>, socket<% } %>) {
+  var self = this;
+  this.awesomeThings = [];
+
+  $http.get('/api/things').then(function(response) {
+    self.awesomeThings = response.data;<% if (filters.socketio) { %>
+    socket.syncUpdates('thing', self.awesomeThings);<% } %>
+  });
+<% if (filters.models) { %>
+  this.addThing = function() {
+    if (self.newThing === '') {
+      return;
+    }
+    $http.post('/api/things', { name: self.newThing });
+    self.newThing = '';
+  };
+
+  this.deleteThing = function(thing) {
+    $http.delete('/api/things/' + thing._id);
+  };<% } %><% if (filters.socketio) { %>
+
+  $scope.$on('$destroy', function() {
+    socket.unsyncUpdates('thing');
+  });<% } %>
+}
 
 angular.module('<%= scriptAppName %>')
-    .controller('MainCtrl', function ($scope, $http <%
-        if (filters.socketio) { %> , socket <%
-        } %> ) {
-        $scope.awesomeThings = [];
+  .controller('MainController', MainController);
 
-        $http.get('/api/things').success(function (awesomeThings) {
-            $scope.awesomeThings = awesomeThings; <%
-            if (filters.socketio) { %>
-                socket.syncUpdates('thing', $scope.awesomeThings); <%
-            } %>
-        }); <%
-        if (filters.mongoose) { %>
-            $scope.addThing = function () {
-                if ($scope.newThing === '') {
-                    return;
-                }
-                $http.post('/api/things', {
-                    name: $scope.newThing
-                });
-                $scope.newThing = '';
-            };
-
-            $scope.deleteThing = function (thing) {
-                $http.delete('/api/things/' + thing._id);
-            }; <%
-        } %> <%
-        if (filters.socketio) { %>
-
-            $scope.$on('$destroy', function () {
-                socket.unsyncUpdates('thing');
-            }); <%
-        } %>
-    });
-
-
-
+})();
 angular.module('<%= scriptAppName %>').controller('AppController', ['$rootScope', '$scope', '$state', '$translate', '$window', '$localStorage', '$timeout', 'toggleStateService', 'colors', 'browser', 'cfpLoadingBar', 'Auth',
   function ($rootScope, $scope, $state, $translate, $window, $localStorage, $timeout, toggle, colors, browser, cfpLoadingBar, Auth) {
 

@@ -1,149 +1,149 @@
 'use strict';
-var path = require('path');
-var fs = require('fs');
 
-module.exports = {
-    rewrite: rewrite,
-    rewriteFile: rewriteFile,
-    appName: appName,
-    processDirectory: processDirectory
-};
+import path from 'path';
+import fs from 'fs';
+import glob from 'glob';
 
-function rewriteFile(args) {
-    args.path = args.path || process.cwd();
-    var fullPath = path.join(args.path, args.file);
+function expandFiles(pattern, options) {
+  options = options || {};
+  var cwd = options.cwd || process.cwd();
+  return glob.sync(pattern, options).filter(function (filepath) {
+    return fs.statSync(path.join(cwd, filepath)).isFile();
+  });
+}
 
-    args.haystack = fs.readFileSync(fullPath, 'utf8');
-    var body = rewrite(args);
+export function rewriteFile(args) {
+  args.path = args.path || process.cwd();
+  var fullPath = path.join(args.path, args.file);
 
-    fs.writeFileSync(fullPath, body);
+  args.haystack = fs.readFileSync(fullPath, 'utf8');
+  var body = rewrite(args);
+
+  fs.writeFileSync(fullPath, body);
 }
 
 function escapeRegExp(str) {
-    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
 }
 
-function rewrite(args) {
-    // check if splicable is already in the body text
-    var re = new RegExp(args.splicable.map(function (line) {
-        return '\s*' + escapeRegExp(line);
-    }).join('\n'));
+export function rewrite(args) {
+  // check if splicable is already in the body text
+  var re = new RegExp(args.splicable.map(function(line) {
+    return '\s*' + escapeRegExp(line);
+  }).join('\n'));
 
-    if (re.test(args.haystack)) {
-        return args.haystack;
+  if (re.test(args.haystack)) {
+    return args.haystack;
+  }
+
+  var lines = args.haystack.split('\n');
+
+  var otherwiseLineIndex = -1;
+  lines.forEach(function (line, i) {
+    if (line.indexOf(args.needle) !== -1) {
+      otherwiseLineIndex = i;
     }
+  });
+  if(otherwiseLineIndex === -1) return lines.join('\n');
 
-    var lines = args.haystack.split('\n');
+  var spaces = 0;
+  while (lines[otherwiseLineIndex].charAt(spaces) === ' ') {
+    spaces += 1;
+  }
 
-    var otherwiseLineIndex = -1;
-    lines.forEach(function (line, i) {
-        if (line.indexOf(args.needle) !== -1) {
-            otherwiseLineIndex = i;
-        }
-    });
-    if (otherwiseLineIndex === -1) return lines.join('\n');
+  var spaceStr = '';
+  while ((spaces -= 1) >= 0) {
+    spaceStr += ' ';
+  }
 
-    var spaces = 0;
-    while (lines[otherwiseLineIndex].charAt(spaces) === ' ') {
-        spaces += 1;
-    }
+  lines.splice(otherwiseLineIndex + 1, 0, args.splicable.map(function(line) {
+    return spaceStr + line;
+  }).join('\n'));
 
-    var spaceStr = '';
-    while ((spaces -= 1) >= 0) {
-        spaceStr += ' ';
-    }
-
-    lines.splice(otherwiseLineIndex + 1, 0, args.splicable.map(function (line) {
-        return spaceStr + line;
-    }).join('\n'));
-
-    return lines.join('\n');
+  return lines.join('\n');
 }
 
-function appName(self) {
-    var counter = 0,
-        suffix = self.options['app-suffix'];
-    // Have to check this because of generator bug #386
-    process.argv.forEach(function (val) {
-        if (val.indexOf('--app-suffix') > -1) {
-            counter++;
-        }
-    });
-    if (counter === 0 || (typeof suffix === 'boolean' && suffix)) {
-        suffix = 'App';
-    }
-    return suffix ? self._.classify(suffix) : '';
+export function appSuffix(self) {
+  var suffix = self.options['app-suffix'];
+  return (typeof suffix === 'string') ? self.lodash.classify(suffix) : '';
+}
+
+export function relativeRequire(to, fr) {
+  fr = this.destinationPath(fr || this.filePath);
+  to = this.destinationPath(to);
+  return path.relative(path.dirname(fr), to)
+    .replace(/\\/g, '/') // convert win32 separator to posix
+    .replace(/^(?!\.\.)(.*)/, './$1') // prefix non parent path with ./
+    .replace(/[\/\\]index\.js$/, ''); // strip index.js suffix from path
 }
 
 function filterFile(template) {
-    // Find matches for parans
-    var filterMatches = template.match(/\(([^)]+)\)/g);
-    var filters = [];
-    if (filterMatches) {
-        filterMatches.forEach(function (filter) {
-            filters.push(filter.replace('(', '').replace(')', ''));
-            template = template.replace(filter, '');
-        });
-    }
+  // Find matches for parans
+  var filterMatches = template.match(/\(([^)]+)\)/g);
+  var filters = [];
+  if(filterMatches) {
+    filterMatches.forEach(function(filter) {
+      filters.push(filter.replace('(', '').replace(')', ''));
+      template = template.replace(filter, '');
+    });
+  }
 
-    return {
-        name: template,
-        filters: filters
-    };
+  return { name: template, filters: filters };
 }
 
 function templateIsUsable(self, filteredFile) {
-    var filters = self.config.get('filters');
-    var enabledFilters = [];
-    for (var key in filters) {
-        if (filters[key]) enabledFilters.push(key);
-    }
-    var matchedFilters = self._.intersection(filteredFile.filters, enabledFilters);
-    // check that all filters on file are matched
-    if (filteredFile.filters.length && matchedFilters.length !== filteredFile.filters.length) {
-        return false;
-    }
-    return true;
+  var filters = self.filters || self.config.get('filters');
+  var enabledFilters = [];
+  for(var key in filters) {
+    if(filters[key]) enabledFilters.push(key);
+  }
+  var matchedFilters = self.lodash.intersection(filteredFile.filters, enabledFilters);
+  // check that all filters on file are matched
+  if(filteredFile.filters.length && matchedFilters.length !== filteredFile.filters.length) {
+    return false;
+  }
+  return true;
 }
 
-function processDirectory(self, source, destination) {
-    var root = self.isPathAbsolute(source) ? source : path.join(self.sourceRoot(), source);
-    var files = self.expandFiles('**', {
-        dot: true,
-        cwd: root
-    });
-    var dest, src;
+export function processDirectory(source, destination) {
+  var self = this;
+  var root = path.isAbsolute(source) ? source : path.join(self.sourceRoot(), source);
+  var files = expandFiles('**', { dot: true, cwd: root });
+  var dest, src;
 
-    files.forEach(function (f) {
-        var filteredFile = filterFile(f);
-        if (self.name) {
-            filteredFile.name = filteredFile.name.replace('name', self.name);
-        }
-        var name = filteredFile.name;
-        console.log(name);
-        var copy = false,
-            stripped;
+  files.forEach(function(f) {
+    var filteredFile = filterFile(f);
+    if(self.basename) {
+      filteredFile.name = filteredFile.name.replace('basename', self.basename);
+    }
+    if(self.name) {
+      filteredFile.name = filteredFile.name.replace('name', self.name);
+    }
+    var name = filteredFile.name;
+    var copy = false, stripped;
 
-        src = path.join(root, f);
-        dest = path.join(destination, name);
+    src = path.join(root, f);
+    dest = path.join(destination, name);
 
-        if (path.basename(dest).indexOf('_') === 0) {
-            stripped = path.basename(dest).replace(/^_/, '');
-            dest = path.join(path.dirname(dest), stripped);
-        }
+    if(path.basename(dest).indexOf('_') === 0) {
+      stripped = path.basename(dest).replace(/^_/, '');
+      dest = path.join(path.dirname(dest), stripped);
+    }
 
-        if (path.basename(dest).indexOf('!') === 0) {
-            stripped = path.basename(dest).replace(/^!/, '');
-            dest = path.join(path.dirname(dest), stripped);
-            copy = true;
-        }
+    if(path.basename(dest).indexOf('!') === 0) {
+      stripped = path.basename(dest).replace(/^!/, '');
+      dest = path.join(path.dirname(dest), stripped);
+      copy = true;
+    }
 
-        if (templateIsUsable(self, filteredFile)) {
-            if (copy) {
-                self.copy(src, dest);
-            } else {
-                self.template(src, dest);
-            }
-        }
-    });
+    if(templateIsUsable(self, filteredFile)) {
+      if(copy) {
+        self.fs.copy(src, dest);
+      } else {
+        self.filePath = dest;
+        self.fs.copyTpl(src, dest, self);
+        delete self.filePath;
+      }
+    }
+  });
 }
